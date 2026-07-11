@@ -64,7 +64,7 @@ export default function AdminPage() {
     padding: 20,
     border: "1px solid var(--color-line)",
     flex: 1,
-    minWidth: 280,
+    minWidth: 260,
   };
 
   const regionData = toChartData(stats.byRegion, (k) => REGIONS[k as keyof typeof REGIONS]?.label ?? k);

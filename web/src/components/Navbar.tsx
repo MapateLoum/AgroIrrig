@@ -10,21 +10,21 @@ export default function Navbar() {
     <div
       style={{
         background: "linear-gradient(135deg,var(--color-indigo) 0%,var(--color-indigo-deep) 100%)",
-        padding: "16px 28px",
+        padding: "14px 20px",
         color: "#fff",
         display: "flex",
         justifyContent: "space-between",
         alignItems: "center",
         flexWrap: "wrap",
-        gap: 12,
+        gap: 10,
       }}
     >
       <Link href="/" style={{ display: "flex", alignItems: "center", gap: 10 }}>
-        <span style={{ fontSize: 24 }}>🌱</span>
-        <span className="font-display" style={{ fontWeight: 700, fontSize: 18 }}>AgroIrrig Sénégal</span>
+        <span style={{ fontSize: 22 }}>🌱</span>
+        <span className="font-display" style={{ fontWeight: 700, fontSize: 17 }}>AgroIrrig Sénégal</span>
       </Link>
 
-      <div style={{ display: "flex", gap: 18, alignItems: "center", fontSize: 14 }}>
+      <div style={{ display: "flex", gap: 14, alignItems: "center", fontSize: 13, flexWrap: "wrap", rowGap: 8 }}>
         {session?.user ? (
           <>
             <Link href="/dashboard" style={{ opacity: 0.9 }}>
@@ -38,7 +38,9 @@ export default function Navbar() {
                 Admin
               </Link>
             )}
-            <span style={{ opacity: 0.7 }}>{session.user.name}</span>
+            <span className="navbar-username" style={{ opacity: 0.7 }}>
+              {session.user.name}
+            </span>
             <button
               onClick={() => signOut({ callbackUrl: "/" })}
               style={{
@@ -72,6 +74,12 @@ export default function Navbar() {
           </>
         )}
       </div>
+
+      <style>{`
+        @media (max-width: 480px) {
+          .navbar-username { display: none; }
+        }
+      `}</style>
     </div>
   );
 }

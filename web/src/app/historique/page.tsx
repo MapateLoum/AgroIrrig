@@ -152,12 +152,14 @@ export default function HistoriquePage() {
                 display: "flex",
                 justifyContent: "space-between",
                 alignItems: "center",
+                flexWrap: "wrap",
+                gap: 8,
                 padding: "14px 18px",
                 borderBottom: "1px solid #F0F8FA",
                 fontSize: 13,
               }}
             >
-              <div>
+              <div style={{ minWidth: 200 }}>
                 <strong>{REGIONS[item.region as keyof typeof REGIONS]?.label ?? item.region}</strong>
                 {" — "}
                 {item.cropType} ({item.cropGrowthStage})
@@ -169,6 +171,7 @@ export default function HistoriquePage() {
                 style={{
                   color: NEED_COLORS[item.irrigationNeed] || "#666",
                   fontWeight: 700,
+                  whiteSpace: "nowrap",
                 }}
               >
                 {item.irrigationNeed} ({item.confidence.toFixed(0)}%)

@@ -1,0 +1,80 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mongodb"
+  url      = env("DATABASE_URL")
+}
+
+enum Role {
+  ADMIN
+  TECHNICIEN
+}
+
+enum OtpType {
+  EMAIL_VERIFICATION
+  PASSWORD_RESET
+}
+
+model User {
+  id            String       @id @default(auto()) @map("_id") @db.ObjectId
+  name          String
+  email         String       @unique
+  password      String
+  role          Role         @default(TECHNICIEN)
+  emailVerified Boolean      @default(false)
+  createdAt     DateTime     @default(now())
+  predictions   Prediction[]
+  otpCodes      OtpCode[]
+}
+
+model OtpCode {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  userId    String   @db.ObjectId
+  user      User     @relation(fields: [userId], references: [id])
+  code      String // haché (bcrypt), jamais stocké en clair
+  type      OtpType
+  expiresAt DateTime
+  used      Boolean  @default(false)
+  createdAt DateTime @default(now())
+
+  @@index([userId, type])
+}
+
+model Prediction {
+  id     String @id @default(auto()) @map("_id") @db.ObjectId
+  userId String @db.ObjectId
+  user   User   @relation(fields: [userId], references: [id])
+
+  // Contexte choisi par l'utilisateur
+  region String
+
+  // --- Récupérées automatiquement (NASA POWER + SoilGrids) au moment de la prédiction ---
+  soilType       String
+  soilPh         Float
+  soilMoisture   Float
+  organicCarbon  Float
+  temperatureC   Float
+  humidity       Float
+  rainfallMm     Float
+  sunlightHours  Float
+  windSpeedKmh   Float
+  season         String
+
+  // --- Saisies manuellement par l'utilisateur ---
+  cropType             String
+  cropGrowthStage      String
+  fieldAreaHectare     Float
+  mulchingUsed         String
+  previousIrrigationMm Float
+
+  // --- Résultat du modèle ---
+  irrigationNeed String
+  confidence     Float
+
+  createdAt DateTime @default(now())
+
+  @@index([userId])
+  @@index([region])
+}

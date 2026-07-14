@@ -51,6 +51,7 @@ export default function Navbar() {
                 borderRadius: 8,
                 cursor: "pointer",
                 fontSize: 13,
+                whiteSpace: "nowrap",
               }}
             >
               Déconnexion
@@ -76,7 +77,7 @@ export default function Navbar() {
       </div>
 
       <style>{`
-        @media (max-width: 480px) {
+        @media (max-width: 640px) {
           .navbar-username { display: none; }
         }
       `}</style>

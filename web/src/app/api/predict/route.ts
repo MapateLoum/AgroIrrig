@@ -3,7 +3,8 @@ import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { fetchLatestClimate, seasonFromDate } from "@/lib/nasa-power";
-import { fetchSoil } from "@/lib/soilgrids";
+//import { fetchSoil } from "@/lib/soilgrids";
+import { REGION_SOIL } from "@/lib/regionsSoil";
 import { REGIONS, RegionKey } from "@/lib/regions";
 
 export const maxDuration = 60; // secondes — max autorisé sur le plan Hobby Vercel
@@ -62,17 +63,27 @@ export async function POST(req: Request) {
   }
 
   // --- 2. Sol (SoilGrids), mis en cache par région ---
-  let soil;
-  try {
-    soil = await fetchSoil(coords.lat, coords.lon, region);
-  } catch (err) {
-    console.error("Erreur SoilGrids:", err);
+  // let soil;
+  // try {
+  //   soil = await fetchSoil(coords.lat, coords.lon, region);
+  // } catch (err) {
+  //   console.error("Erreur SoilGrids:", err);
+  //   return NextResponse.json(
+  //     { error: "Impossible de récupérer les données de sol (SoilGrids). Réessaie dans quelques instants." },
+  //     { status: 502 }
+  //   );
+  // }
+
+// --- 2. Sol : valeurs figées par région (SoilGrids est en pause côté fournisseur
+  // depuis fin 2025/2026, sans date de retour annoncée ; le sol ne change de toute
+  // façon pas d'un jour à l'autre, voir src/lib/regionsSoil.ts) ---
+  const soil = REGION_SOIL[region];
+  if (!soil) {
     return NextResponse.json(
-      { error: "Impossible de récupérer les données de sol (SoilGrids). Réessaie dans quelques instants." },
-      { status: 502 }
+      { error: `Aucune donnée de sol disponible pour la région "${region}"` },
+      { status: 500 }
     );
   }
-
   const season = seasonFromDate(climate.date);
 
   const mlPayload = {

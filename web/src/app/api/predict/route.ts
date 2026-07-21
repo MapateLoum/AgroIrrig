@@ -6,6 +6,7 @@ import { fetchLatestClimate, seasonFromDate } from "@/lib/nasa-power";
 import { fetchSoil } from "@/lib/soilgrids";
 import { REGIONS, RegionKey } from "@/lib/regions";
 
+export const maxDuration = 60; // secondes — max autorisé sur le plan Hobby Vercel
 interface PredictBody {
   region: RegionKey;
   cropType: string;
@@ -103,12 +104,12 @@ export async function POST(req: Request) {
 
   let mlResult;
   try {
-    const mlResp = await fetch(`${mlServiceUrl}/predict`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(mlPayload),
-      signal: AbortSignal.timeout(20000),
-    });
+const mlResp = await fetch(`${mlServiceUrl}/predict`, {
+  method: "POST",
+  headers: { "Content-Type": "application/json" },
+  body: JSON.stringify(mlPayload),
+  signal: AbortSignal.timeout(55000),
+});
 
     if (!mlResp.ok) {
       const errBody = await mlResp.json().catch(() => ({}));

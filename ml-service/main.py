@@ -56,6 +56,9 @@ class PredictionInput(BaseModel):
 def root():
     return {"message": "AgroIrrig ML Service opérationnel", "model": "XGBoost", "n_features": len(FEATURES)}
 
+@app.head("/")
+def root_head():
+    return {}
 
 @app.get("/options")
 def options():
